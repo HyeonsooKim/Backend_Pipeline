@@ -105,6 +105,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'coz.urls'
+AUTH_USER_MODEL = 'user.User'
 
 TEMPLATES = [
     {
