@@ -1,14 +1,10 @@
 # apps/user/tests.py
 from django.contrib.auth.hashers import make_password
-from django.test import TestCase
-
 from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
-
-
+from rest_framework.test import APIClient, APITestCase
 from apps.user.models import User
 
-class TestUser(TestCase):
+class TestUser(APITestCase):
     '''
         users app의 API 3개(회원가입, 로그인, 회원탈퇴) unit test
     '''
@@ -70,7 +66,7 @@ class TestUser(TestCase):
 
     # 로그인
     def test_login_success(self):
-        self.login_url = "/api/users/login"
+        self.login_url = "/api/users/sign-in/"
         data= {
                 "username": "codestates",
                 "password": "123",
@@ -80,22 +76,23 @@ class TestUser(TestCase):
 
     # 비밀번호 불일치
     def test_password_fail(self):
-        self.login_url = "/api/users/login"
+        self.login_url = "/api/users/sign-in/"
         data= {
                 "username": "codestates",
                 "password": "133",
             }
         response= self.client.post(self.login_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(response.json(), {"detail": "No active account found with the given credentials"})
+        self.assertEqual(response.json(), {'username': "{'detail': 'No active account found with the given credentials'}"})
 
     # 회원탈퇴
     def test_withdraw_success(self):
-        self.withdraw_url = "/api/users/withdraw"
+        self.withdraw_url = f"/api/users/{self.user.id}/withdraw/"
 
-        self.refresh = RefreshToken.for_user(self.user)
+        # self.refresh = RefreshToken.for_user(self.user)
+        client = APIClient()
+        client.force_authenticate(user=self.user)
+        # self.client.credentials(HTTP_AUTHORIZATION = f'Bearer {self.refresh.access_token}')
 
-        self.client.credentials(HTTP_AUTHORIZATION = f'Bearer {self.refresh.access_token}')
-
-        response= self.client.delete(self.withdraw_url, format='json')
+        response = client.delete(self.withdraw_url, format='json')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

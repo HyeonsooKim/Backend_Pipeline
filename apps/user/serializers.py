@@ -1,16 +1,11 @@
-# DRF
-from rest_framework import serializers
+# apps/user/serializers.py
+from django.contrib.auth import authenticate
+from rest_framework import serializers, status
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.serializers import ValidationError
-from rest_framework.exceptions import AuthenticationFailed
-# Django
-from django.contrib.auth import get_user_model
-from django.contrib.auth.hashers import make_password
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from datetime import date
-# Internal
 from apps.user.models import User
-
-User = get_user_model()
+from apps.user.exceptions import CustomValidationError
 
 class SignUpSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
@@ -35,10 +30,10 @@ class SignUpSerializer(serializers.ModelSerializer):
         """
 
         if User.objects.filter(username=attrs['username']).exists():
-            raise ValidationError({'username', '이미 존재하는 아이디입니다.'})
+            raise serializers.ValidationError({'username': '이미 존재하는 아이디입니다.'})
 
         if attrs['password'] != attrs['password_check']:
-            raise ValidationError({'password', '비밀번호와 비밀번호 확인이 일치하지 않습니다.'})
+            raise serializers.ValidationError({'password': '비밀번호와 비밀번호 확인이 일치하지 않습니다.'})
 
         attrs['created_at'] = date.today()
 
@@ -56,5 +51,34 @@ class SignUpSerializer(serializers.ModelSerializer):
         )
         user.set_password(password)
         user.save()
-
+        token = RefreshToken.for_user(user)
         return user
+
+
+class SignInSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(
+        required=True,
+        write_only=True,
+        style={'input_type': 'password'}
+    )
+
+    def validate(self, data):
+        user = authenticate(**data)
+        if user:
+            token = TokenObtainPairSerializer.get_token(user)
+            refresh = str(token)
+            access = str(token.access_token)
+            data = {
+                'user': user.username,
+                'refresh': refresh,
+                'access': access,
+            }
+            return data
+
+        raise CustomValidationError({"detail": "No active account found with the given credentials"}, 'username', status_code=status.HTTP_401_UNAUTHORIZED)
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+          model = User
+          fields = '__all__'

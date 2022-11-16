@@ -1,72 +1,47 @@
 # apps/user/views.py
-
-# DRF
-from rest_framework.views import APIView
-from rest_framework.decorators import action
-from rest_framework import status
+from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.exceptions import AuthenticationFailed
-
 from apps.user.models import User
-from .serializers import SignUpSerializer
-from .tokens import generate_token, validate_token
+from .serializers import SignUpSerializer, SignInSerializer, UserSerializer
 
-class UserSignUpView(APIView):
+class UserSignUpView(generics.CreateAPIView):
+    """ 회원가입 뷰 - 요청을 보낸 사용자를 등록합니다. """
+    queryset = User.objects.all()
     serializer_class = SignUpSerializer
     
-    @action(methods=['POST'], detail=False)
+
+class UserSignInView(generics.GenericAPIView):
+    """ 로그인 뷰 - 요청을 보낸 사용자를 인증합니다. """
+    serializer_class = SignInSerializer
+
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.validated_data['user']
+            access_token = serializer.validated_data['access']
+            refresh_token = serializer.validated_data['refresh']
+            res = Response(
+                {
+                    "user": user,
+                    "token": {
+                        "refresh": refresh_token,
+                        "access": access_token,
+                    },
+                },
+                status=status.HTTP_200_OK,
+            ) 
 
-        if serializer.is_valid(raise_exception=False):
-            user = serializer.save()
-            try:
-                # payload에 넣을 값 커스텀 가능
-                payload_value = user.id
-                payload = {
-                    "subject": payload_value,
-                }
+            #쿠키데이터 저장
+            res.set_cookie("access", access_token, httponly=True)
+            res.set_cookie("refresh", refresh_token, httponly=True)
 
-                access_token = generate_token(payload, "access")
-                refresh_token = generate_token(payload, "refresh")
+            return res
 
-                res = Response(
-                        {
-                            "user": user.username,
-                            "message": "register successs",
-                            "token": {
-                                "access": access_token,
-                                "refresh": refresh_token,
-                            },
-                        },
-                        status=status.HTTP_201_CREATED,
-                    )
-
-                #쿠키데이터 저장
-                res.set_cookie("access", access_token, httponly=True)
-                res.set_cookie("refresh", refresh_token, httponly=True)
-                return res
-
-            except User.DoesNotExist:
-
-                data = {
-                    "results": {
-                        "msg": "유저 정보가 올바르지 않습니다.",
-                        "code": "E4010"
-                    }
-                }
-
-                return Response(data=data, status=status.HTTP_401_UNAUTHORIZED)
-
-            except Exception as e:
-                print(e)
-                data = {
-                    "results": {
-                        "msg": "정상적인 접근이 아닙니다.",
-                        "code": "E5000"
-                    }
-                }
-
-                return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)                
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserWithdrawalView(generics.DestroyAPIView):
+    """ 회원탈퇴 뷰 - 요청을 보낸 사용자를 삭제합니다. """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
