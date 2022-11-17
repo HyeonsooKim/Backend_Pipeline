@@ -1,6 +1,7 @@
 # apps/user/views.py
 from rest_framework import generics, status
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from apps.user.models import User
 from .serializers import SignUpSerializer, SignInSerializer, UserSerializer
 
@@ -43,5 +44,6 @@ class UserSignInView(generics.GenericAPIView):
 
 class UserWithdrawalView(generics.DestroyAPIView):
     """ 회원탈퇴 뷰 - 요청을 보낸 사용자를 삭제합니다. """
+    permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserSerializer
