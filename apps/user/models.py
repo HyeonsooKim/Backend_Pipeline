@@ -20,7 +20,7 @@ class CustomUserManager(BaseUserManager):
             email=email,
             name=name
         )
-
+        user.is_staff=False
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -29,6 +29,7 @@ class CustomUserManager(BaseUserManager):
         superuser = self.create_user(
             username=username,
             password=password,
+            email=email,
             name=name
         )
         superuser.is_staff = True
@@ -60,6 +61,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name=_('Is active'),
         default=True
         )
+    is_staff = models.BooleanField(
+        verbose_name=_('Is staff'),
+        default=False
+        )
     date_joined = models.DateTimeField(
         verbose_name=_('Date joined'),
         default=timezone.now
@@ -70,7 +75,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email']
+    REQUIRED_FIELDS = ['email', 'name']
 
     class Meta:
         db_table = 'user'

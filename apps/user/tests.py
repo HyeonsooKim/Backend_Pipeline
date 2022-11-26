@@ -89,10 +89,8 @@ class TestUser(APITestCase):
     def test_withdraw_success(self):
         self.withdraw_url = f"/api/users/{self.user.id}/withdraw/"
 
-        # self.refresh = RefreshToken.for_user(self.user)
         client = APIClient()
         client.force_authenticate(user=self.user)
-        # self.client.credentials(HTTP_AUTHORIZATION = f'Bearer {self.refresh.access_token}')
 
         response = client.delete(self.withdraw_url, format='json')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
