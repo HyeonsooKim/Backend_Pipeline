@@ -1,8 +1,7 @@
 # apps/user/models.py
 from django.db import models
 from django.utils import timezone
-from django.dispatch import receiver
-from django.db.models.signals import post_save
+import datetime
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 
@@ -18,8 +17,10 @@ class CustomUserManager(BaseUserManager):
         user = self.model(
             username=username,
             email=email,
-            name=name
+            name=name,
+            is_staff=False
         )
+
         user.is_staff=False
         user.set_password(password)
         user.save(using=self._db)
@@ -40,6 +41,7 @@ class CustomUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    GENDER_CHOICES = (('Male', '남성'), ('Female', '여성'))
     username = models.CharField(
         max_length=30,
         unique=True,
@@ -56,6 +58,17 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_length=30,
         null=False,
         blank=False
+        )
+    gender = models.CharField(
+        max_length=6, 
+        choices=GENDER_CHOICES, 
+        null=False, 
+        blank=False
+        )
+    birth_date = models.DateField(
+        verbose_name=_('Birth Date'),
+        null=False,
+        default=datetime.date.today
         )
     is_active = models.BooleanField(
         verbose_name=_('Is active'),
