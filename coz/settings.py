@@ -14,7 +14,6 @@ import pymysql
 import datetime
 import environ
 
-
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -36,6 +35,8 @@ pymysql.install_as_MySQLdb()
 SECRET_KEY = env('SECRET_KEY')
 ALGORITHM = env('ALGORITHM')
 
+# Database
+# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 DATABASES = {
     'default' : {
         'ENGINE'  : 'django.db.backends.mysql',
@@ -90,6 +91,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
+    'apps.user.apps.UserConfig',
+    'apps.board.apps.BoardConfig',
 ]
 
 MIDDLEWARE = [
@@ -104,6 +107,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'coz.urls'
+AUTH_USER_MODEL = 'user.User'
 
 TEMPLATES = [
     {
@@ -123,11 +127,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'coz.wsgi.application'
 
+# DJANGO REST FRAMEWORK
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.AllowAny",
+    ),
+    "TEST_REQUEST_DEFAULT_FORMAT": "json",
+}
 
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+# JWT
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(hours=1),
+    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": False,
+    'UPDATE_LAST_LOGIN': True,
+    'TOKEN_USER_CLASS': 'user.User',
+}
 
-
+REST_USE_JWT = True
 
 
 # Password validation
@@ -165,6 +185,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = "uploads"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
