@@ -20,7 +20,7 @@ class SignUpSerializer(serializers.ModelSerializer):
     )
     class Meta:
         model = User
-        fields = ['username', 'name', 'email', 'password', 'password_check']
+        fields = ['username', 'name', 'email', 'password', 'password_check', 'gender', 'birth_date']
 
     def validate(self, attrs):
         """
