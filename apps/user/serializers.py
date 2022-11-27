@@ -5,6 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from datetime import date
 from apps.user.models import User
+from django.contrib.auth.models import update_last_login
 from apps.user.exceptions import CustomValidationError
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -48,6 +49,8 @@ class SignUpSerializer(serializers.ModelSerializer):
             password=password,
             name=validated_data['name'],
             email=validated_data['email'],
+            gender=validated_data['gender'],
+            birth_date=validated_data['birth_date'],
         )
         user.set_password(password)
         user.save()
@@ -66,6 +69,7 @@ class SignInSerializer(serializers.Serializer):
     def validate(self, data):
         user = authenticate(**data)
         if user:
+            update_last_login(None, user)
             token = TokenObtainPairSerializer.get_token(user)
             refresh = str(token)
             access = str(token.access_token)
