@@ -18,10 +18,8 @@ class CustomUserManager(BaseUserManager):
             username=username,
             email=email,
             name=name,
-            is_staff=False
         )
 
-        user.is_staff=False
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -33,7 +31,7 @@ class CustomUserManager(BaseUserManager):
             email=email,
             name=name
         )
-        superuser.is_staff = True
+
         superuser.is_superuser = True
         superuser.is_active = True
         superuser.save(using=self._db)
@@ -67,15 +65,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         )
     birth_date = models.DateField(
         verbose_name=_('Birth Date'),
-        null=False,
-        default=datetime.date.today
+        null=False
         )
     is_active = models.BooleanField(
         verbose_name=_('Is active'),
         default=True
         )
-    is_staff = models.BooleanField(
-        verbose_name=_('Is staff'),
+    is_superuser = models.BooleanField(
+        verbose_name=_('Is superuser'),
         default=False
         )
     date_joined = models.DateTimeField(
