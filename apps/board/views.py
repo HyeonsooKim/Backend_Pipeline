@@ -6,7 +6,6 @@ from .models import Board
 from .serializers import BoardSerializer
 from .permissions import IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly
 import logging
-from pythonjsonlogger import jsonlogger
 
 logger = logging.getLogger('log_file2')
 
