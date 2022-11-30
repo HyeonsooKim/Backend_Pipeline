@@ -10,14 +10,7 @@ from pythonjsonlogger import jsonlogger
 
 logger = logging.getLogger('log_file2')
 
-# logHandler = logging.StreamHandler()
-# formatter = jsonlogger.JsonFormatter()
-# logHandler.setFormatter(formatter)
-# logger.addHandler(logHandler)
-
-
 class BoardView(ListCreateAPIView):
-    logger.info("BoardView")
     queryset = Board.objects.all()
     serializer_class = BoardSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -30,8 +23,8 @@ class BoardView(ListCreateAPIView):
         queryset = self.filter_queryset(self.get_queryset())
         print("List")
         logger.info("GET access Board List", extra={'request':request})
-        # breakpoint()
         page = self.paginate_queryset(queryset)
+        
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
@@ -40,12 +33,11 @@ class BoardView(ListCreateAPIView):
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        print("Create")
-        logger.info("POST access Board Creation TEST", extra={'request':request})
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
+        logger.info("POST access Board Creation", extra={'request':request})
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
@@ -55,15 +47,28 @@ class BoardDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
 
     def retrieve(self, request, *args, **kwargs):
-        print("Create")
-        logger.info("GET access Board Detail TEST", extra={'request':request})
         instance = self.get_object()
         instance.hit += 1  # 조회수 1 증가
         instance.save()
         serializer = self.get_serializer(instance)
+        logger.info("GET access Board Detail", extra={'request':request})
         return Response(serializer.data)
 
-    def perform_update(self, serializer):
-        logger.info("PUT access Board Detail")
-        breakpoint()
-        serializer.save()
+    def update(self, request, *args, **kwargs):
+        logger.info("PUT access Board Detail", extra={'request':request})
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        logger.info("DELETE access Board Detail", extra={'request':request})
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)

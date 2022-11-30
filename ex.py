@@ -8,6 +8,7 @@ def get():
     result = {}
     this_year=datetime.today().year
     for i in range(10):
+        breakpoint()
         age_num = (datetime(this_year-((i+1)*10)+1,1,1), datetime(this_year - (i*10),1,1))
         print(datetime(this_year-((i+1)*10)+1,1,1), datetime(this_year - (i*10),12,31))
         if i == 0:
