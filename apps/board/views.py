@@ -7,7 +7,7 @@ from .serializers import BoardSerializer
 from .permissions import IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly
 import logging
 
-logger = logging.getLogger('log_file2')
+logger = logging.getLogger('json_logger')
 
 class BoardView(ListCreateAPIView):
     queryset = Board.objects.all()

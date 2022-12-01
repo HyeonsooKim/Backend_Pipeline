@@ -224,94 +224,23 @@ LOGGING = {
             'filename': BASE_DIR / 'logs/log_file1.log',
             'formatter': 'standard',
         },
-        'log_file2': {
+        'json_logger': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'logs/log_file2.log',
+            'filename': BASE_DIR / 'logs/json_logger.log',
             'formatter': 'json',
         },
-      },
+    },
     'loggers': {
          'log_file1': {
             'handlers': ['log_file1'],
             'level': 'INFO',
             'propagate': False,
         },
-        'log_file2': {
-            'handlers': ['log_file2'],
+        'json_logger': {
+            'handlers': ['json_logger'],
             'level': 'INFO',
             'propagate': False,
         }
-      }
+    }
 }
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'filters': {
-#         'require_debug_false': {
-#             '()': 'django.utils.log.RequireDebugFalse',
-#         },
-#         'require_debug_true': {
-#             '()': 'django.utils.log.RequireDebugTrue',
-#         },
-#     },
-#     'formatters': {
-#         'django.server': {
-#             '()': 'django.utils.log.ServerFormatter',
-#             'format': '[{server_time}] {message}',
-#             'style': '{',
-#         },
-#         'standard': {
-#             'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
-#         },
-#         # Custom Formatter
-#         'custom' : {
-#             '()': 'django.utils.log.ServerFormatter',
-#             'format': '{asctime} [{levelname}] {name}: {message}',
-#             'style': '{',
-#         }
-#     },
-#     'handlers': {
-#         'console': {
-#             'level': 'INFO',
-#             'filters': ['require_debug_true'],
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'custom',
-#         },
-#         'django.server': {
-#             'level': 'INFO',
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'django.server',
-#         },
-#         'mail_admins': {
-#             'level': 'ERROR',
-#             'filters': ['require_debug_false'],
-#             'class': 'django.utils.log.AdminEmailHandler'
-#         },
-#         'file': {
-#             'level': 'INFO',
-#             'encoding': 'utf-8',
-#             'filters': ['require_debug_true'],
-#             'class': 'logging.handlers.RotatingFileHandler',
-#             'filename': BASE_DIR / 'logs/log_data.log',
-#             'maxBytes': 1024*1024*3,  # 3 MB
-#             'backupCount': 20,
-#             'formatter': 'custom'
-#         },
-#     },
-#     'loggers': {
-#         'django': {
-#             'handlers': ['console', 'mail_admins', 'file'],
-#             'level': 'INFO',
-#         },
-#         'django.server': {
-#             'handlers': ['django.server'],
-#             'level': 'INFO',
-#             'propagate': False,
-#         },
-#         'apps.user': {
-#             'handlers': ['file','console'],
-#             'level': 'INFO',
-#         },
-#     }
-# }

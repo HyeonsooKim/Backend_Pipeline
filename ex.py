@@ -20,4 +20,7 @@ def get():
 
     return result
 
-print(get())
+# print(get())
+# import hashlib
+# json_log = {"url": "/api/boards/24", "method": "DELETE", "board_id": 24, "user_id": 21, "name": "log_file2", "inDate": "2022-12-01T01:32:21.437Z", "detail": {"message": "DELETE access Board Detail", "levelname": "INFO"}, "x_forward_for": None}
+# def hashing_id(id):
