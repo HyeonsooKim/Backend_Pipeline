@@ -33,10 +33,9 @@ pymysql.install_as_MySQLdb()
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-
+# ENCRYPT_KEY = env('ENCRYPT_KEY')
 SECRET_KEY = env('SECRET_KEY')
 ALGORITHM = env('ALGORITHM')
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 DATABASES = {

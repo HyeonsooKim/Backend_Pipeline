@@ -1,5 +1,7 @@
 import json_log_formatter
+import hashlib
 from datetime import datetime
+from .hash import hashing_userid
 
 class CustomisedJSONFormatter(json_log_formatter.JSONFormatter):
     def json_record(self, message, extra, record):
@@ -14,6 +16,8 @@ class CustomisedJSONFormatter(json_log_formatter.JSONFormatter):
 
             if _request.__dict__['_auth']:
                 extra['user_id'] = _request.__dict__['_auth']['user_id'] ^ 0
+                # user_id 해싱
+                extra['user_id'] = hashing_userid
             else:
                 extra['user_id'] = None
 

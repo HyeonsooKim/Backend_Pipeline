@@ -278,3 +278,8 @@ zsdoc/data
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows,python,zsh,visualstudiocode
 .idea/
+
+# log files
+logs/.
+
+ex.py
