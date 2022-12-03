@@ -4,9 +4,13 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from apps.user.models import User
 from .serializers import SignUpSerializer, SignInSerializer, UserSerializer
+import logging
+
+logger = logging.getLogger('django.server')
 
 class UserSignUpView(generics.CreateAPIView):
     """ 회원가입 뷰 - 요청을 보낸 사용자를 등록합니다. """
+    logger.info("POST access User Sign Up")
     queryset = User.objects.all()
     serializer_class = SignUpSerializer
     
@@ -18,6 +22,7 @@ class UserSignInView(generics.GenericAPIView):
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
+            logger.info("POST access User Sign In")
             user = serializer.validated_data['user']
             access_token = serializer.validated_data['access']
             refresh_token = serializer.validated_data['refresh']
@@ -39,11 +44,13 @@ class UserSignInView(generics.GenericAPIView):
             return res
 
         else:
+            logger.debug("POST access User Sign In - Bad Request(400)")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserWithdrawalView(generics.DestroyAPIView):
     """ 회원탈퇴 뷰 - 요청을 보낸 사용자를 삭제합니다. """
+    logger.info("POST access User Withdrawal")
     permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserSerializer

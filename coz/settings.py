@@ -16,6 +16,8 @@ import environ
 
 from pathlib import Path
 
+from .logging import CustomisedJSONFormatter
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,10 +33,9 @@ pymysql.install_as_MySQLdb()
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-
+# ENCRYPT_KEY = env('ENCRYPT_KEY')
 SECRET_KEY = env('SECRET_KEY')
 ALGORITHM = env('ALGORITHM')
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 DATABASES = {
@@ -193,3 +194,52 @@ MEDIA_ROOT = "uploads"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format' : "[%(asctime)s] %(levelname)s %(name)s:%(lineno)s %(message)s",
+            'datefmt' : "%Y-%m-%d %H:%M:%S"
+        },
+        'json': {
+            '()': CustomisedJSONFormatter,
+        }
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
+         'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard',
+        },
+          'log_file1': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs/log_file1.log',
+            'formatter': 'standard',
+        },
+        'json_logger': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs/json_logger.log',
+            'formatter': 'json',
+        },
+    },
+    'loggers': {
+         'log_file1': {
+            'handlers': ['log_file1'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'json_logger': {
+            'handlers': ['json_logger'],
+            'level': 'INFO',
+            'propagate': False,
+        }
+    }
+}
