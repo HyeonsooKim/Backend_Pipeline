@@ -66,6 +66,11 @@ class BoardDetailView(RetrieveUpdateDestroyAPIView):
 
         return Response(serializer.data)
 
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        logger.info("PATCH access Board Detail", extra={'request':request})
+        return self.update(request, *args, **kwargs)
+
     def destroy(self, request, *args, **kwargs):
         logger.info("DELETE access Board Detail", extra={'request':request})
         instance = self.get_object()

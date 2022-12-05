@@ -13,11 +13,11 @@ class CustomisedJSONFormatter(json_log_formatter.JSONFormatter):
                 pass
             else:
                 extra['board_id'] = int(extra['url'].replace('/api/boards/', ''))
-
+            # breakpoint()
             if _request.__dict__['_auth']:
                 extra['user_id'] = _request.__dict__['_auth']['user_id'] ^ 0
                 # user_id 해싱
-                extra['user_id'] = hashing_userid
+                extra['user_id'] = hashing_userid(extra['user_id'])
             else:
                 extra['user_id'] = None
 
@@ -27,4 +27,5 @@ class CustomisedJSONFormatter(json_log_formatter.JSONFormatter):
         request = extra.pop('request', None)
         if request:
             extra['x_forward_for'] = request.META.get('X-FORWARD-FOR')
+        print(extra)
         return extra
