@@ -4,7 +4,7 @@ import json
 import random
 
 def board_api(method, title="", content="", username="", path=""):
-    API_HOST = "http://127.0.0.1:8000/api/boards/"
+    API_HOST = "http://ec2-3-38-141-38.ap-northeast-2.compute.amazonaws.com:8000/api/boards/"
     url = API_HOST + path
     headers = {'Content-Type': 'application/json', 'charset': 'UTF-8', 'Accept': '*/*'}
     body = {
@@ -56,7 +56,7 @@ def board_api(method, title="", content="", username="", path=""):
 
 
 def signin_api(username, password="test"):
-    url = "http://127.0.0.1:8000/api/users/sign-in/"
+    url = "http://ec2-3-38-141-38.ap-northeast-2.compute.amazonaws.com:8000/api/users/sign-in/"
     headers = {'Content-Type': 'application/json', 'charset': 'UTF-8', 'Accept': '*/*'}
     body = {
         "username": f"{username}",
@@ -69,14 +69,14 @@ def read_list():
     board_api(method='GET')
 
 def read_detail():
-    user = "test"+str(random.randint(1,5000))
+    user = "test"+str(random.randint(1,20000))
     board_api(method='GET', username=user)
 
 
 # board_api(method='GET', username=user, path=f"{random.randint(1,17)}")
 
 def create_article():
-    user = "test"+str(random.randint(1,5000))
+    user = "test"+str(random.randint(1,20000))
     title = "Dummy Article"
     content = "This is for making bulk log data"
     board_api(method='POST', title=title, content=content, username=user)
