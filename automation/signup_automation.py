@@ -4,7 +4,7 @@ import json
 import random
 
 def signup_api(id, gender, birth_date):
-    url = "http://127.0.0.1:8000/api/users/sign-up/"
+    url = "http://ec2-3-38-141-38.ap-northeast-2.compute.amazonaws.com:8000/api/users/sign-up/"
     headers = {'Content-Type': 'application/json', 'charset': 'UTF-8', 'Accept': '*/*'}
     body = {
         "username": f"test{id}",
@@ -52,7 +52,9 @@ def calculate_date():
 
 
 if __name__ == '__main__':
-    for i in range(1, 5001):
+    from time import sleep
+    for i in range(5001, 20001):
+        # sleep(1)
         birth_date = calculate_date()
         gender = random.choice(['Male', 'Female'])
         signup_api(i, gender, birth_date)
