@@ -53,7 +53,11 @@ DATABASES = {
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+<<<<<<< HEAD
 ALLOWED_HOSTS = ['3.38.141.38', 'ec2-3-38-141-38.ap-northeast-2.compute.amazonaws.com']
+=======
+ALLOWED_HOSTS = ['*']
+>>>>>>> 92e6d1f6c4aac35e27a83f835c7d4249905a76d4
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -95,6 +99,7 @@ INSTALLED_APPS = [
     'apps.user.apps.UserConfig',
     'apps.board.apps.BoardConfig',
     'apps.statistic.apps.StatisticConfig',
+    'apps.data.apps.DataConfig',
 ]
 
 MIDDLEWARE = [

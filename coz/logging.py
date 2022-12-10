@@ -24,8 +24,5 @@ class CustomisedJSONFormatter(json_log_formatter.JSONFormatter):
         extra['name'] = record.__dict__['name']
         extra['inDate'] = datetime.fromtimestamp(record.__dict__['created']).strftime('%Y-%m-%dT%X.%f')[:-3]+'Z'
         extra['detail'] = {'message': message, 'levelname':record.__dict__['levelname']}
-        request = extra.pop('request', None)
-        if request:
-            extra['x_forward_for'] = request.META.get('X-FORWARD-FOR')
-        print(extra)
+        extra.pop('request', None)
         return extra
