@@ -53,7 +53,7 @@ DATABASES = {
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['3.38.141.38']
+ALLOWED_HOSTS = ['3.38.141.38', 'ec2-3-38-141-38.ap-northeast-2.compute.amazonaws.com']
 
 CORS_ORIGIN_ALLOW_ALL = True
 
