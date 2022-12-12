@@ -280,6 +280,6 @@ zsdoc/data
 .idea/
 
 # log files
-logs/.
+logs/*
 
 ex.py

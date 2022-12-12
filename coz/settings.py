@@ -54,7 +54,7 @@ DATABASES = {
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['3.37.12.122', 'ec2-3-37-12-122.ap-northeast-2.compute.amazonaws.com']
+ALLOWED_HOSTS = ['3.37.12.122', 'ec2-3-37-12-122.ap-northeast-2.compute.amazonaws.com','*']
 
 
 
