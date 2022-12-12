@@ -13,9 +13,9 @@ class CustomisedJSONFormatter(json_log_formatter.JSONFormatter):
                 pass
             else:
                 extra['board_id'] = int(extra['url'].replace('/api/boards/', ''))
-            # breakpoint()
             if _request.__dict__['_auth']:
                 extra['user_id'] = _request.__dict__['_auth']['user_id'] ^ 0
+                breakpoint()
                 # user_id 해싱
                 extra['user_id'] = hashing_userid(extra['user_id'])
             else:
