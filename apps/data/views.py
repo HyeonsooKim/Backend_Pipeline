@@ -19,7 +19,3 @@ class JsonDataView(APIView):
                     data_list.append(json.loads(log_data[i]))
 
         return Response(data_list, status=status.HTTP_200_OK)
-    # def get(self, request):
-    #     male_cnt = User.objects.filter(gender="Male").count()
-    #     female_cnt = User.objects.filter(gender="Female").count()
-    #     return JsonResponse({"male_count": male_cnt, "female_count": female_cnt}, status=status.HTTP_200_OK)
