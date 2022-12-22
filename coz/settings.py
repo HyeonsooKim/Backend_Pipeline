@@ -54,7 +54,7 @@ DATABASES = {
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['de2022-env.eba-ajpqrf2m.us-west-2.elasticbeanstalk.com']
+ALLOWED_HOSTS = ['*', 'de2022-env.eba-ajpqrf2m.us-west-2.elasticbeanstalk.com']
 
 
 
